@@ -56,58 +56,37 @@ public class Main {
          
     }
     
-    protected class TieBreaker<T> implements Comparator<T>{
-
-    	private 
-    	TieBreaker(){
-    		
-    	}
-		@Override
-		public int compare(T arg0, T arg1) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-    	
-    }
  
     private static void topologicalSort(int nEntries, List<Integer>[] sucList,
             List<Integer>[] antList, List<Integer> userFriendlyPerm) {
     	
     	//in this context, the deque behaves just like a stack
     	//the ArrayDeque implementation is used solely for better efficiency
-        Deque<Integer> ready = new ArrayDeque<Integer>(nEntries*2);
+    	//Deque<Integer> ready = new ArrayDeque<Integer>(nEntries*2);
+    	PriorityQueue<Integer> ready = new PriorityQueue<Integer>(nEntries*2, new TieBreaker<Integer>());
         int[] inCounter = new int[nEntries];
-         
-        int first;
-        //in a 1st iteration, we push the elements with no antecessors, following rule (b),
-        //starting from the highest
+        
+        int head;
+        
         for(int i = nEntries-1; i > -1 ; i--){
             inCounter[i] = antList[i].size();
             if(inCounter[i] == 0){
                 System.out.println("nao tenho ant: "+i);
-                ready.push(i);
+                ready.add(i);
             }
         }
         while(!ready.isEmpty()){
-            first = ready.pop();
-            userFriendlyPerm.add(first);
+            head = ready.poll();
+            userFriendlyPerm.add(head);
             
              
-            for(int k=0;k<sucList[first].size();k++){
-                int l = sucList[first].get(k);
+            for(int k=0;k<sucList[head].size();k++){
+                int l = sucList[head].get(k);
                 inCounter[l]--;
                 if(inCounter[l] == 0){
                     ready.add(l);
                 }
             }
         }
-    }
-     
-    private void funA(){
-         
-    }
-     
-    private int funB(int x, int y){
-        return 0;
     }
 }
