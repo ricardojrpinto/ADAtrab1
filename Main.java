@@ -20,15 +20,15 @@ public class Main {
         List<Integer>[] antList = (List<Integer>[]) new List[nEntries];
         List<Integer> userFriendlyPerm = new ArrayList<Integer>();
  
-        if (!(nEntries >= minE) && !(nEntries <= maxE))
-            System.out.println("entradas invalidas");
-        if (!(nDependencies >= minD) && !(nDependencies <= maxD))
-            System.out.println("dependencias invalidas");
+        if (!(nEntries >= minE) && !(nEntries <= maxE)) return;
+            //System.out.println("entradas invalidas");
+        if (!(nDependencies >= minD) && !(nDependencies <= maxD)) return;
+           // System.out.println("dependencias invalidas");
         else {
  
             for (int i = 0; i < nEntries; i++){
-                sucList[i] = new ArrayList<Integer>();
-                antList[i] = new ArrayList<Integer>();
+                sucList[i] = new LinkedList<Integer>();
+                antList[i] = new LinkedList<Integer>();
             }
              
              
@@ -46,11 +46,16 @@ public class Main {
          
         topologicalSort(nEntries, sucList, antList, userFriendlyPerm);
          
-        System.out.println("order:");
+        //System.out.println("order:");
         Iterator<Integer> it2 = userFriendlyPerm.iterator();
  
+        //if only the while was used, there would be a backspace in the end of the output
+        //we dont know if mooshak is sensible to that, so we'll play safely
+        if(it2.hasNext())
+        	System.out.print(it2.next());
+        
         while (it2.hasNext()) {
-            System.out.print(it2.next()+" ");
+            System.out.print(" "+it2.next());
         }
         System.out.println();
          
@@ -63,30 +68,48 @@ public class Main {
     	//in this context, the deque behaves just like a stack
     	//the ArrayDeque implementation is used solely for better efficiency
     	//Deque<Integer> ready = new ArrayDeque<Integer>(nEntries*2);
-    	PriorityQueue<Integer> ready = new PriorityQueue<Integer>(nEntries*2, new TieBreaker<Integer>());
+    	MyPriorityQueue<Integer> ready = new MyPriorityQueue<Integer>(antList);
         int[] inCounter = new int[nEntries];
+        
+    
         
         int head;
         
         for(int i = nEntries-1; i > -1 ; i--){
             inCounter[i] = antList[i].size();
             if(inCounter[i] == 0){
-                System.out.println("nao tenho ant: "+i);
-                ready.add(i);
+            	System.out.println("adding "+i);
+            	ready.add(i);
             }
         }
         while(!ready.isEmpty()){
+        	 /***********************DEBUG*********************/
+        	System.out.print("ready: {");
+        	for(Integer i: ready){
+        		System.out.print(i+" ");
+        	}
+        	System.out.println("}");
+        	 /***********************DEBUG*********************/
+        	
             head = ready.poll();
+            System.out.println("adding head "+head);
             userFriendlyPerm.add(head);
+            ready.incPosition(head);
             
-             
-            for(int k=0;k<sucList[head].size();k++){
-                int l = sucList[head].get(k);
-                inCounter[l]--;
-                if(inCounter[l] == 0){
-                    ready.add(l);
+            for(Integer i: sucList[head]){
+            	inCounter[i]--;
+                if(inCounter[i] == 0){
+                	System.out.println("adding to ready list: "+i);
+                    ready.add(i);
                 }
             }
+            
+            /***********************DEBUG*********************/
+            System.out.print("UFP: {");
+            for(Integer i: userFriendlyPerm){
+            	System.out.print(i+" ");
+            }
+            System.out.println("}");
         }
     }
 }
