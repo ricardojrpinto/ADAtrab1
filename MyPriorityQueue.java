@@ -32,47 +32,50 @@ public class MyPriorityQueue<E> extends LinkedList<E> {
 			super.add(e1);
 			return true;
 		}
-		System.out.println("e1: "+e1);
+		//System.out.println("e1: "+e1);
 		while(!inserted && it.hasNext()){
 			E e2 = it.next();
-			System.out.println("e2: "+e2);
+			//System.out.println("e2: "+e2);
 			if(antecessors[(Integer)e2].isEmpty() && !antecessors[(Integer)e1].isEmpty()){	//rule A (particular)
-				System.out.println("entered: rule A(particular)");
+				//System.out.println("entered: rule A(particular)");
 				super.add(super.indexOf((Integer)e2),e1);
 				inserted = true;
-			} else if(!antecessors[(Integer)e1].equals(antecessors[(Integer)e2])){	//rule A
-				// TODO
-				System.out.println("entered: rule A");
-				Iterator<E> it1 = antecessors[(Integer)e1].iterator();
-				Iterator<E> it2 = antecessors[(Integer)e2].iterator();
-				boolean valid = true;
-				while(it1.hasNext() && !inserted){
-					
-					E next1 = it1.next();
-					while(it2.hasNext() && valid){
-						E next2 = it2.next();
-						System.out.println(ufpPositions[(Integer) next1]+" "+ufpPositions[(Integer) next2]);
-						if(ufpPositions[(Integer) next1] <= ufpPositions[(Integer) next2]){
-							valid = false;
+			} else {
+				if(!antecessors[(Integer)e1].equals(antecessors[(Integer)e2])){	//rule A
+//					System.out.println("entered: rule A");
+					Iterator<E> it1 = antecessors[(Integer)e1].iterator();
+					Iterator<E> it2;
+					boolean valid = true;
+					while(it1.hasNext() && !inserted){
+						it2 = antecessors[(Integer)e2].iterator();
+						E next1 = it1.next();
+						while(it2.hasNext() && valid){
+							//System.out.println("...");
+							E next2 = it2.next();
+							//System.out.println(ufpPositions[(Integer) next1]+" "+ufpPositions[(Integer) next2]);
+							if(ufpPositions[(Integer) next1] <= ufpPositions[(Integer) next2]){
+								valid = false;
+							}
 						}
+						
+						if(valid){
+							//System.out.println("entered: valid rule A");
+							super.add(super.indexOf((Integer)e2),e1);
+							inserted = true;
+						}
+						valid = true;
 					}
 					
-					if(valid){
-						System.out.println("entered: valid rule A");
-						super.add(super.indexOf((Integer)e2),e1);
-						inserted = true;
-					}
-					valid = true;
 				}
-				
-			} else if((Integer)e1 < (Integer)e2){ //rule B
-				System.out.println("entered: rule B");
-				super.add(super.indexOf((Integer)e2),e1);
-				inserted = true;
-			}
+				if(!inserted && (Integer)e1 < (Integer)e2){ //rule B
+					//System.out.println("entered: rule B");
+					super.add(super.indexOf((Integer)e2),e1);
+					inserted = true;
+				}
+			} 
 		}
 		if(!inserted){
-			System.out.println("entered: no rule");
+			//System.out.println("entered: no rule");
 			super.addLast(e1);
 			inserted = true;
 		}

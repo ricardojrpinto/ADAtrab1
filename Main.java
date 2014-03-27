@@ -78,12 +78,12 @@ public class Main {
         for(int i = nEntries-1; i > -1 ; i--){
             inCounter[i] = antList[i].size();
             if(inCounter[i] == 0){
-            	System.out.println("adding "+i);
+            	//System.out.println("adding "+i);
             	ready.add(i);
             }
         }
         while(!ready.isEmpty()){
-        	 /***********************DEBUG*********************/
+        	 /***********************DEBUG*********************
         	System.out.print("ready: {");
         	for(Integer i: ready){
         		System.out.print(i+" ");
@@ -92,24 +92,25 @@ public class Main {
         	 /***********************DEBUG*********************/
         	
             head = ready.poll();
-            System.out.println("adding head "+head);
+           // System.out.println("adding head "+head);
             userFriendlyPerm.add(head);
             ready.incPosition(head);
             
             for(Integer i: sucList[head]){
             	inCounter[i]--;
                 if(inCounter[i] == 0){
-                	System.out.println("adding to ready list: "+i);
+                	//System.out.println("adding to ready list: "+i);
                     ready.add(i);
                 }
             }
             
-            /***********************DEBUG*********************/
+            /***********************DEBUG*********************
             System.out.print("UFP: {");
             for(Integer i: userFriendlyPerm){
             	System.out.print(i+" ");
             }
             System.out.println("}");
+            /***********************DEBUG*********************/
         }
     }
 }
